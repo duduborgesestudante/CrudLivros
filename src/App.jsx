@@ -3,21 +3,21 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 function App() {
-  const [veiculos, setVeiculos] = useState([]);
+  const [livros, setLivros] = useState([]);
   const [novoLivro, setNovoLivro] = useState({
     isbn: '',
     titulo: '',
     editora: '',
     autor: '',
-    genero: '',
+    genero: ''
   });
   useEffect(() => {
-    fetchVeiculos();
+    fetchLivros();
   }, []);
-  const fetchVeiculos = async () => {
+  const fetchLivros = async () => {
     try {
       const response = await axios.get('http://localhost:8090/livros');
-      setVeiculos(response.data);
+      setLivros(response.data);
     } catch (error) {
       console.error('Erro ao buscar Livros:', error);
     }
@@ -32,8 +32,8 @@ function App() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      await axios.post('http://localhost:8090/livros', novoVeiculo);
-      fetchVeiculos();
+      await axios.post('http://localhost:8090/livros', novoLivro);
+      fetchLivros();
       setNovoLivro({
         isbn: '',
         titulo: '',
@@ -42,74 +42,82 @@ function App() {
         genero: '',
       });
     } catch (error) {
-      console.error('Erro ao criar veículo:', error);
+      console.error('Erro ao criar o Livro:', error);
     }
   };
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`http://localhost:8090/veiculos/${id}`);
-      fetchVeiculos();
+      await axios.delete(`http://localhost:8090/livros/${id}`);
+      fetchLivros();
     } catch (error) {
-      console.error('Erro ao excluir veículo:', error);
+      console.error('Erro ao excluir o Livro:', error);
     }
   };
   const handleUpdate = async (id, veiculoAtualizado) => {
     try {
-      await axios.put(`http://localhost:8090/veiculos/${id}`, veiculoAtualizado);
-      fetchVeiculos();
+      await axios.put(`http://localhost:8090/livros/${id}`, veiculoAtualizado);
+      fetchLivros();
     } catch (error) {
-      console.error('Erro ao atualizar veículo:', error);
+      console.error('Erro ao atualizar o Livro:', error);
     }
   };
               
   return (
     <div>
-      <h1>Gerenciamento de Veículos</h1>
+      <h1>Gerenciamento de Livros</h1>
   
       <form onSubmit={handleSubmit}>
         <input
           type="text"
-          name="placa"
-          placeholder="Placa"
-          value={novoVeiculo.placa}
+          name="isbn"
+          placeholder="Isbn"
+          value={novoLivro.isbn}
+          onChange={handleInputChange}
+        />
+         <input
+          type="text"
+          name="titulo"
+          placeholder="Titulo"
+          value={novoLivro.titulo}
+          onChange={handleInputChange}
+        />
+       
+        <input
+          type="text"
+          name="editora"
+          placeholder="Editora"
+          value={novoLivro.editora}
           onChange={handleInputChange}
         />
         <input
           type="text"
-          name="montadora"
-          placeholder="Montadora"
-          value={novoVeiculo.montadora}
+          name="autor"
+          placeholder="Autor"
+          value={novoLivro.autor}
           onChange={handleInputChange}
         />
-        <input
+         <input
           type="text"
-          name="modelo"
-          placeholder="Modelo"
-          value={novoVeiculo.modelo}
+          name="genero"
+          placeholder="Gênero"
+          value={novoLivro.genero}
           onChange={handleInputChange}
         />
-        <input
-          type="number"
-          name="ano"
-          placeholder="Ano"
-          value={novoVeiculo.ano}
-          onChange={handleInputChange}
-        />
-        <button type="submit">Adicionar Veículo</button>
+        <button type="submit">Adicionar o Livro</button>
       </form>
   
       <ul>
-        {veiculos.map((veiculo) => (
-          <li key={veiculo.id}>
-            {veiculo.placa} - {veiculo.montadora} {veiculo.modelo} ({veiculo.ano})
+        {livros.map((livro) => (
+          <li key={livro.id}>
+            {livro.isbn} - {livro.titulo} {livro.editora} {livro.autor} {livro.genero}
             
-            <button onClick={() => handleDelete(veiculo.id)}>Excluir</button>
+            <button onClick={() => handleDelete(livro.id)}>Excluir</button>
             
             <button
               onClick={() =>
-                handleUpdate(veiculo.id, {
-                  ...veiculo,
-                  modelo: 'Livro atualizado Atualizado', // Exemplo de atualização
+                handleUpdate(livro.id, {
+                  ...livro,
+                  modelo: 'Livro atualizado Atualizado',
                 })
               }
             >
